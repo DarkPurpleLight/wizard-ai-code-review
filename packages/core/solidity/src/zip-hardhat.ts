@@ -199,6 +199,13 @@ function getHardhatPlugins(c: Contract) {
   return plugins;
 }
 
+/**
+ * Generates a JSZip archive containing a Hardhat project scaffold for the specified Solidity contract.
+ *
+ * The generated archive includes contract source code, test files, deployment scripts or Ignition modules, configuration files, and package manifests. The contents are tailored based on whether the contract is upgradeable and whether it imports Optimism Bedrock contracts. The license field in package files is set to match the contract's license.
+ *
+ * @returns A Promise that resolves to a JSZip instance representing the Hardhat project archive.
+ */
 export async function zipHardhat(c: Contract, opts?: GenericOptions) {
   const zip = new JSZip();
 

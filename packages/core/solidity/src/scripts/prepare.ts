@@ -11,6 +11,11 @@ import { writeGeneratedSources } from '../generate/sources';
 import { mapValues } from '../utils/map-values';
 import { transitiveClosure } from '../utils/transitive-closure';
 
+/**
+ * Generates Solidity sources, compiles them, and extracts dependency and source information for OpenZeppelin and Optimism Bedrock contracts, saving the results to a JSON file.
+ *
+ * This function creates generated Solidity sources, compiles the project, collects all import dependencies and source contents for files under the '@openzeppelin/contracts', '@openzeppelin/community-contracts', and '@eth-optimism/contracts-bedrock' prefixes, computes their transitive dependencies, and writes the aggregated data to 'openzeppelin-contracts.json'.
+ */
 async function main() {
   const generatedSourcesPath = path.join(hre.config.paths.sources, 'generated');
   await rimraf(generatedSourcesPath);

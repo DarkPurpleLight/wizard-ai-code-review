@@ -5,6 +5,13 @@ import { safePrintSolidityCodeBlock, makeDetailedPrompt } from '../../utils';
 import { customSchema } from '../schemas';
 import { solidityPrompts } from '@openzeppelin/wizard-common';
 
+/**
+ * Registers a custom Solidity contract generation tool with the MCP server.
+ *
+ * The registered tool accepts contract customization options, including cross-chain messaging parameters, and returns formatted Solidity code based on the provided configuration.
+ *
+ * @returns The registered tool instance
+ */
 export function registerSolidityCustom(server: McpServer): RegisteredTool {
   return server.tool(
     'solidity-custom',

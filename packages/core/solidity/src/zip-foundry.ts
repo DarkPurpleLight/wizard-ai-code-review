@@ -8,6 +8,11 @@ import type { Lines } from './utils/format-lines';
 import { formatLinesWithSpaces, spaceBetween } from './utils/format-lines';
 import packageJson from '../package.json';
 
+/**
+ * Generates the SPDX license identifier and Solidity pragma header lines for a contract.
+ *
+ * @returns An array containing the SPDX license and Solidity version pragma statements.
+ */
 function getHeader(c: Contract) {
   return [`// SPDX-License-Identifier: ${c.license}`, `pragma solidity ^${SOLIDITY_VERSION};`];
 }
@@ -167,6 +172,12 @@ const script = (c: Contract, opts?: GenericOptions) => {
     return vars;
   }
 
+  /**
+   * Wraps the provided lines in a comment block with a TODO note, prompting the user to set address variables and uncomment the section.
+   *
+   * @param lines - The lines of code to be commented out as a placeholder.
+   * @returns An array of strings representing the commented-out code block with instructions.
+   */
   function addTodoAndCommentOut(lines: Lines[]) {
     return [
       '// TODO: Set addresses for the variables below, then uncomment the following section:',
@@ -320,7 +331,9 @@ See [Solidity scripting guide](https://book.getfoundry.sh/guides/scripting-with-
 `;
 
 /**
- * Load soldeer.lock in environment specific way: browser (for UI) or Node.js (e.g. for tests)
+ * Loads the `soldeer.lock` file, using dynamic import in browser environments or reading from disk in Node.js.
+ *
+ * @returns The contents of the `soldeer.lock` file as a string.
  */
 async function loadSoldeerLock() {
   if (typeof process === 'undefined') {
@@ -335,6 +348,13 @@ async function loadSoldeerLock() {
   }
 }
 
+/**
+ * Generates a ZIP archive containing a complete Foundry project scaffold for a given Solidity contract.
+ *
+ * The archive includes contract source, tests, deployment script, setup script, and README. If the contract imports Optimism packages, the archive also includes a `soldeer.lock` file for dependency management.
+ *
+ * @returns A JSZip instance representing the generated Foundry project archive.
+ */
 export async function zipFoundry(c: Contract, opts?: GenericOptions) {
   const zip = new JSZip();
 
