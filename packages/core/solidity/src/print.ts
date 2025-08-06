@@ -21,6 +21,13 @@ import { inferTranspiled } from './infer-transpiled';
 import { compatibleContractsSemver } from './utils/version';
 import { stringifyUnicodeSafe } from './utils/sanitize';
 
+/**
+ * Generates the complete Solidity source code for a contract from its abstract representation.
+ *
+ * Assembles license, pragma, imports, NatSpec comments, contract declaration with inheritance, variables, custom errors, modifier definitions, constructor, and all categorized functions into a formatted Solidity contract string.
+ *
+ * @returns The full Solidity contract source code as a string.
+ */
 export function printContract(contract: Contract, opts?: Options): string {
   const helpers = withHelpers(contract, opts);
 
@@ -59,6 +66,12 @@ export function printContract(contract: Contract, opts?: Options): string {
   );
 }
 
+/**
+ * Generates Solidity code lines for contract variables, including their NatSpec comments if present.
+ *
+ * @param variables - The list of contract variables to render
+ * @returns An array of lines representing each variable declaration with optional documentation
+ */
 function printVariables(variables: Variable[]): Lines[] {
   return variables.flatMap(v => {
     const lines: Lines[] = [];
@@ -70,14 +83,30 @@ function printVariables(variables: Variable[]): Lines[] {
   });
 }
 
+/**
+ * Returns Solidity error declarations for each custom error in the contract.
+ *
+ * @returns An array of lines, each defining a custom error in the format `error ErrorName();`
+ */
 function printCustomErrors(errors: CustomError[]): Lines[] {
   return errors.map(e => `error ${e.name}();`);
 }
 
+/**
+ * Generates Solidity code lines for each modifier definition.
+ *
+ * @param modifierDefinitions - The list of modifier definitions to render
+ * @returns An array of lines representing each Solidity modifier declaration
+ */
 function printModifierDefinitions(modifierDefinitions: ModifierDefinition[]): Lines[] {
   return modifierDefinitions.flatMap(def => [`modifier ${def.name}() {`, def.code, '}']);
 }
 
+/**
+ * Returns the Solidity inheritance clause for a contract if it has parent contracts.
+ *
+ * @returns An array containing the inheritance clause string, or an empty array if there are no parents.
+ */
 function printInheritance(contract: Contract, { transformName }: Helpers): [] | [string] {
   if (contract.parents.length > 0) {
     return ['is ' + contract.parents.map(p => transformName(p.contract)).join(', ')];
@@ -86,6 +115,13 @@ function printInheritance(contract: Contract, { transformName }: Helpers): [] | 
   }
 }
 
+/**
+ * Generates the Solidity constructor or initializer function for a contract.
+ *
+ * For upgradeable contracts, emits an `initialize` function with the `initializer` modifier and disables further initializers if needed. For non-upgradeable contracts, emits a standard constructor with parent initializers and constructor code if present. Returns an empty array if no constructor or initializer is required.
+ *
+ * @returns Lines representing the constructor or initializer function, or an empty array if not needed.
+ */
 function printConstructor(contract: Contract, helpers: Helpers): Lines[] {
   const hasParentParams = contract.parents.some(p => p.params.length > 0);
   const hasConstructorCode = contract.constructorCode.length > 0;
@@ -177,6 +213,13 @@ export function printValue(value: Value): string {
   }
 }
 
+/**
+ * Generates the Solidity source lines for a contract function, including its signature, modifiers, return types, and body.
+ *
+ * If the function overrides a parent and is not marked as final, a super call is appended to the body. Returns an empty array if the function has no code, modifiers, or meaningful overrides.
+ *
+ * @returns An array of formatted lines representing the function declaration and body.
+ */
 function printFunction(fn: ContractFunction, helpers: Helpers): Lines[] {
   const { transformName } = helpers;
 
@@ -223,7 +266,17 @@ function printFunction(fn: ContractFunction, helpers: Helpers): Lines[] {
 }
 
 // generic for functions and constructors
-// kindedName = 'function foo' or 'constructor'
+/**
+ * Formats a Solidity function or constructor declaration with optional comments, arguments, inline argument comment, modifiers, and code block.
+ *
+ * @param comments - NatSpec or documentation comments to include above the declaration
+ * @param kindedName - The function or constructor keyword and name (e.g., 'function foo' or 'constructor')
+ * @param args - List of argument strings for the function signature
+ * @param argInlineComment - Optional inline comment to append inside the argument list
+ * @param modifiers - List of Solidity modifiers to apply to the function
+ * @param code - Lines representing the function or constructor body
+ * @returns Lines representing the formatted function or constructor declaration
+ */
 function printFunction2(
   comments: string[],
   kindedName: string,
@@ -253,10 +306,22 @@ function printFunction2(
   return fn;
 }
 
+/**
+ * Formats a string as a Solidity-style inline comment for use in function signatures.
+ *
+ * @param comment - The comment text to format, or undefined if no comment is provided
+ * @returns The formatted inline comment, or an empty string if no comment is given
+ */
 function formatInlineComment(comment: string | undefined): string {
   return comment ? `/* ${comment} */` : '';
 }
 
+/**
+ * Formats a function argument as a Solidity parameter string, transforming the type name if it is a contract reference.
+ *
+ * @param arg - The function argument to format
+ * @returns The formatted Solidity parameter string in the form `type name`
+ */
 function printArgument(arg: FunctionArgument, { transformName }: Helpers): string {
   let type: string;
   if (typeof arg.type === 'string') {

@@ -29,6 +29,13 @@ export const defaults: Required<CustomOptions> = {
   info: commonDefaults.info,
 } as const;
 
+/**
+ * Returns a `CustomOptions` object with all optional fields populated using default values where not provided.
+ *
+ * Ensures that cross-chain messaging, cross-chain function name, and pausable options are always defined.
+ *
+ * @returns The input options merged with defaults, guaranteeing all fields are set.
+ */
 function withDefaults(opts: CustomOptions): Required<CustomOptions> {
   return {
     ...opts,
@@ -47,6 +54,13 @@ export function isAccessControlRequired(opts: Partial<CustomOptions>): boolean {
   return opts.pausable || opts.upgradeable === 'uups';
 }
 
+/**
+ * Constructs a customizable smart contract with optional features such as cross-chain messaging, pausable functionality, access control, upgradeability, and metadata.
+ *
+ * Builds the contract according to the provided options, applying defaults where necessary. If cross-chain messaging is set to `'superchain'`, the contract includes superchain messaging support with the specified function name. Additional features like pausable functionality, access control, upgradeability, and metadata are configured based on the options.
+ *
+ * @returns The constructed contract instance with the selected features enabled
+ */
 export function buildCustom(opts: CustomOptions): Contract {
   const allOpts = withDefaults(opts);
 

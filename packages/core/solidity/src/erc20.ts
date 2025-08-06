@@ -305,6 +305,15 @@ function addFlashMint(c: ContractBuilder) {
   });
 }
 
+/**
+ * Adds cross-chain bridging functionality to the ERC20 contract using the specified bridging type and access control.
+ *
+ * Throws an error if upgradeability is enabled, as it is not supported with cross-chain bridging.
+ *
+ * @param crossChainBridging - The bridging mechanism to use, either 'custom' or 'superchain'
+ * @param upgradeable - Indicates if the contract is upgradeable; must be false for bridging
+ * @param access - The access control strategy for custom bridging
+ */
 function addCrossChainBridging(
   c: ContractBuilder,
   crossChainBridging: 'custom' | 'superchain',
@@ -341,6 +350,16 @@ function addCrossChainBridging(
   c.addCustomError('Unauthorized');
 }
 
+/**
+ * Configures custom cross-chain bridging access control for the ERC20 contract.
+ *
+ * Depending on the specified access control type, sets up the appropriate mechanism to restrict bridge operations:
+ * - For `false` or `'ownable'`, assigns an immutable bridge address and restricts access to it.
+ * - For `'roles'`, uses role-based access control to grant bridge permissions.
+ * - For `'managed'`, integrates with AuthorityUtils for managed access control.
+ *
+ * Throws an error if an unknown access type is provided.
+ */
 function addCustomBridging(c: ContractBuilder, access: Access) {
   switch (access) {
     case false:

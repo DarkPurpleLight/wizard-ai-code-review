@@ -25,6 +25,12 @@ const livereloader =
     port: 35731,
   });
 
+/**
+ * Creates a Rollup plugin that runs a specified command once at the start of the build.
+ * @param {string} cmd - The command to execute.
+ * @param {...string} args - Arguments to pass to the command.
+ * @return {object} A Rollup plugin object with a buildStart hook.
+ */
 function onStartRun(cmd, ...args) {
   let ran = false;
   return {
@@ -43,6 +49,13 @@ function onStartRun(cmd, ...args) {
   };
 }
 
+/**
+ * Creates a Rollup plugin that imports files with specified extensions as string modules.
+ * 
+ * Files matching the provided extensions are read as UTF-8 text and bundled as default string exports.
+ * @param {string[]} fileExtensions - Array of file extensions (including the dot) to be imported as strings.
+ * @return {object} A Rollup plugin object for importing text files as strings.
+ */
 function importTextAsString(fileExtensions) {
   return {
     name: 'text-import',

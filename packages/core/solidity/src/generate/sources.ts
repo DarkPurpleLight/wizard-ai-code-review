@@ -80,6 +80,15 @@ interface GeneratedSource extends GeneratedContract {
   source: string;
 }
 
+/**
+ * Generates a set of built contracts for a specified subset and contract kind.
+ *
+ * Builds contracts for all valid option sets of the given kind, skipping those with invalid options. If `subset` is `'all'`, returns all successfully built contracts. If `subset` is `'minimal-cover'`, returns a minimal set of contracts that collectively cover all import dependencies, partitioned by upgradeability.
+ *
+ * @param subset - Determines whether to return all contracts or a minimal covering subset
+ * @param kind - Optional contract kind to restrict generation
+ * @returns An array of generated contracts matching the specified criteria
+ */
 function generateContractSubset(subset: Subset, kind?: Kind): GeneratedContract[] {
   const contracts = [];
 
