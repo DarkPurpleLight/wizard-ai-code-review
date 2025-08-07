@@ -2,12 +2,11 @@ name: Shippie 🚢
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
 
 permissions:
   pull-requests: write
   contents: read
-  models: read
 
 jobs:
   build:
@@ -26,7 +25,7 @@ jobs:
         run: bun i shippie
 
       - name: Run shippie review
-        run: bun shippie review --platform=github --modelString=openai:gpt-4.1-mini --baseUrl=https://models.github.ai/inference
+        run: bun shippie review --platform=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
