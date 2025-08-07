@@ -22,10 +22,10 @@ jobs:
           bun-version: latest
 
       - name: Install shippie
-        run: bun i shippie
+        run: yarn global add  shippie
 
       - name: Run shippie review
-        run: bun shippie review --platform=github
+        run: npx review --platform=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
